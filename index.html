@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PS India Bot</title>
+</head>
+
+<body>
+    <div id="info">
+        Authorizing...
+    </div>
+
+    <script>
+        function notify(json) {
+            const {
+                error,
+                user_id,
+                psn_name
+            } = json;
+
+            const str = (error !== undefined) ?
+                `Authorization failed: ${error}` :
+                `Successfully authorized PSN user ${psn_name}, page can be closed`;
+
+            alert(str);
+            document.getElementById('info').innerText = str;
+        }
+
+        window.onload = () => {
+            // https://playstation-india.github.io/#token_type=Bearer&access_token=...&expires_in=604800&scope=connections+identify
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+
+            fetch(`http://localhost:80/authorize?token=${accessToken}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(result => result.json())
+                .then(response => notify(response))
+                .catch(err => {
+                    notify({
+                        error: err
+                    })
+                });
+        }
+    </script>
+</body>
+
+</html>
