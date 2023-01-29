@@ -31,7 +31,7 @@
             const fragment = new URLSearchParams(window.location.hash.slice(1));
             const accessToken = fragment.get('access_token');
 
-            fetch(`http://localhost:80/authorize?token=${accessToken}`, {
+            fetch(`https://psn.pratham.cc/authorize?token=${accessToken}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
