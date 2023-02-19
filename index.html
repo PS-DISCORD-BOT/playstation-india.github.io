@@ -11,19 +11,47 @@
     </div>
 
     <script>
-        function notify(json) {
+        function notify_checked(json) {
+            const {
+                error
+            } = json;
+
+            const str = (error !== undefined) ? error : `Authorized successfully and fetched PSNProfiles, page can be closed`;
+
+            alert(str);
+            document.getElementById('info').innertext = str;
+        }
+
+        function notify_and_next(json) {
             const {
                 error,
                 user_id,
                 psn_name
             } = json;
 
-            const str = (error !== undefined) ?
-                `Authorization failed: ${error}` :
-                `Successfully authorized PSN user ${psn_name}, page can be closed`;
+            if (error !== undefined) {
+                const str = `Authorization failed: ${error}`;
 
-            alert(str);
-            document.getElementById('info').innerText = str;
+                alert(str);
+                document.getElementById('info').innertext = str;
+            } else {
+                const str = `Successfully authorized PSN user ${psn_name}, fetching PSNProfiles...`;
+                document.getElementById('info').innertext = str;
+
+                fetch(`https://psn.pratham.cc/check?user_id=${user_id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(result => result.json())
+                    .then(response => notify_checked(response))
+                    .catch(err => {
+                        notify_checked({
+                            error: err
+                        })
+                    })
+            }
         }
 
         window.onload = () => {
@@ -38,9 +66,9 @@
                     },
                 })
                 .then(result => result.json())
-                .then(response => notify(response))
+                .then(response => notify_and_next(response))
                 .catch(err => {
-                    notify({
+                    notify_and_next({
                         error: err
                     })
                 });
