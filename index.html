@@ -11,6 +11,8 @@
     </div>
 
     <script>
+        const BASE_URL = "https://example.com";
+
         function notify_checked(json) {
             const {
                 error
@@ -38,7 +40,7 @@
                 const str = `Successfully authorized PSN user ${psn_name}, fetching PSNProfiles...`;
                 document.getElementById('info').innertext = str;
 
-                fetch(`https://psn.pratham.cc/check?user_id=${user_id}`, {
+                fetch(`${BASE_URL}/check?user_id=${user_id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -59,7 +61,7 @@
             const fragment = new URLSearchParams(window.location.hash.slice(1));
             const accessToken = fragment.get('access_token');
 
-            fetch(`https://psn.pratham.cc/authorize?token=${accessToken}`, {
+            fetch(`${BASE_URL}/authorize?token=${accessToken}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
